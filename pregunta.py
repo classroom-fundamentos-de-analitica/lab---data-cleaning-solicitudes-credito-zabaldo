@@ -13,8 +13,12 @@ def clean_data():
 
     df = pd.read_csv("solicitudes_credito.csv", sep=";")
 
-    #
-    # Inserte su código aquí
-    #
-
-    return df
+    df=df.dropna()
+    header = ['sexo','tipo_de_emprendimiento','idea_negocio','barrio','línea_credito']
+    for a in header:
+      df[a]=df[a].apply(lambda x: x.lower().replace("-"," ").replace("_"," "))  
+    df['comuna_ciudadano'] = df['comuna_ciudadano'].astype(int)
+    df['monto_del_credito']=df['monto_del_credito'].apply(lambda x: x.strip("$").replace(",","")).astype(float)
+    df['fecha_de_beneficio'] = pd.to_datetime(df['fecha_de_beneficio'], format='%d/%m/%Y', errors='coerce').fillna(
+    pd.to_datetime(df['fecha_de_beneficio'], format='%Y/%m/%d', errors='coerce'))
+    return df.drop_duplicates()
