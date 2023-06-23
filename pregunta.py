@@ -7,11 +7,12 @@ correctamente. Tenga en cuenta datos faltantes y duplicados.
 
 """
 import pandas as pd
-
+from re import match
+from datetime import datetime
 
 def clean_data():
 
-    df = pd.read_csv("solicitudes_credito.csv", sep=";")
+    df = pd.read_csv("solicitudes_credito.csv", sep=";",index_col=0)
 
     df=df.dropna()
     header = ['sexo','tipo_de_emprendimiento','idea_negocio','barrio','línea_credito']
@@ -21,4 +22,5 @@ def clean_data():
     df['monto_del_credito']=df['monto_del_credito'].apply(lambda x: x.strip("$").replace(",","")).astype(float)
     df['fecha_de_beneficio'] = pd.to_datetime(df['fecha_de_beneficio'], format='%d/%m/%Y', errors='coerce').fillna(
     pd.to_datetime(df['fecha_de_beneficio'], format='%Y/%m/%d', errors='coerce'))
-    return df.drop_duplicates()
+    df = df.drop_duplicates()
+    return df
